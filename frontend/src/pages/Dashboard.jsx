@@ -18,21 +18,18 @@ export default function Dashboard() {
   const [bidForm, setBidForm] = useState({ message: '', price: '' })
   const [loadingStates, setLoadingStates] = useState({})
 
-  useEffect(() => {
+   useEffect(() => {
     dispatch(fetchGigs())
-    if (!user) {
-      dispatch(setUser({ id: 'demo123', name: 'Demo Client', email: 'client@test.com' }))
-    }
   }, [dispatch])
 
-  const handleSearch = () => dispatch(fetchGigs({ search }))
+   const handleSearch = () => dispatch(fetchGigs({ search }))
 
   const handleCreateGig = async (e) => {
     e.preventDefault()
     setLoadingStates(prev => ({...prev, createGig: true}))
     try {
       await dispatch(createGig(gigForm)).unwrap()
-      dispatch(fetchGigs()) // Refresh gigs
+      dispatch(fetchGigs())
       setShowCreateGig(false)
       setGigForm({ title: '', description: '', budget: '' })
     } catch (error) {
