@@ -4,7 +4,7 @@ import axios from 'axios'
 import { fetchGigs, createGig } from '../redux/slices/gigsSlice'
 import { createBid, fetchBids, hireBid } from '../redux/slices/bidsSlice'
 
-axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || 'https://gigflow-smzv.onrender.com/api'
 
 export default function Dashboard() {
   const dispatch = useDispatch()
