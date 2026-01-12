@@ -1,19 +1,24 @@
-import { io } from 'socket.io-client'
-import { useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { io } from "socket.io-client";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
-const socket = io('http://localhost:5000')
+const SOCKET_URL = import.meta.env.VITE_API_BASE_URL;
+
+const socket = io(SOCKET_URL, {
+  withCredentials: true,
+  transports: ["websocket"]
+});
 
 export const useSocket = () => {
-  const user = useSelector(state => state.auth.user)
-  
+  const user = useSelector((state) => state.auth.user);
+
   useEffect(() => {
-    if (user) {
-      socket.emit('join', user.id)
+    if (user?.id) {
+      socket.emit("join", user.id);
     }
-  }, [user])
+  }, [user]);
 
-  return socket
-}
+  return socket;
+};
 
-export default socket
+export default socket;
