@@ -15,7 +15,10 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: 'https://gigflow-bambam.vercel.app',
+  origin: [
+      "http://localhost:5173",
+      "https://gigflow-bambam.vercel.app"
+  ],
   credentials: true
 }));
 app.use(express.json());
