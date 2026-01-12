@@ -3,13 +3,26 @@ const User = require('../models/User');
 
 const authMiddleware = async (req, res, next) => {
   try {
-    const token = req.cookies.token;
+    let token;
+
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (!token && req.cookies?.token) {
+      token = req.cookies.token;
+    }
+
     if (!token) {
       return res.status(401).json({ message: 'No token, authorization denied' });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded._id).select('-password');
+
     if (!user) {
       return res.status(401).json({ message: 'Token is not valid' });
     }
@@ -17,6 +30,7 @@ const authMiddleware = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    console.error(error);
     res.status(401).json({ message: 'Token is not valid' });
   }
 };
