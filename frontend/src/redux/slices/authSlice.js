@@ -40,7 +40,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: null,
-    token: null,
+    token: localStorage.getItem("token") || null,
     loading: false,
     error: null
   },
@@ -63,9 +63,17 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
+
         state.user = action.payload.user;
-        state.token = action.payload.token;
-        localStorage.setItem("token", action.payload.token);
+
+        // 🔥 FIX: support all common backend token keys
+        const token =
+          action.payload.token ||
+          action.payload.jwt ||
+          action.payload.accessToken;
+
+        state.token = token;
+        localStorage.setItem("token", token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -79,16 +87,15 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        localStorage.setItem("token", action.payload.token);
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
-  }
-});
 
-export const { logout, clearError } = authSlice.actions;
-export default authSlice.reducer;
+        state.user = action.payload.user;
+
+        const token =
+          action.payload.token ||
+          action.payload.jwt ||
+          action.payload.accessToken;
+
+        state.token = token;
+        localStorage.setItem("token", token);
+      })
+      .addCase(reg
